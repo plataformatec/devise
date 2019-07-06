@@ -15,11 +15,11 @@ end
 class DeviseTest < ActiveSupport::TestCase
   test 'bcrypt on the class' do
     password = "super secret"
-    klass    = Struct.new(:pepper, :stretches).new("blahblah", 2)
+    klass    = Struct.new(:pepper, :stretches).new("blahblah", 4)
     hash     = Devise::Encryptor.digest(klass, password)
     assert_equal ::BCrypt::Password.create(hash), hash
 
-    klass    = Struct.new(:pepper, :stretches).new("bla", 2)
+    klass    = Struct.new(:pepper, :stretches).new("bla", 4)
     hash     = Devise::Encryptor.digest(klass, password)
     assert_not_equal ::BCrypt::Password.new(hash), hash
   end
