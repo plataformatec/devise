@@ -107,4 +107,47 @@ class DatabaseAuthenticationTest < Devise::IntegrationTest
       fill_in 'email', with: 'foo@bar.com'
     end
   end
+
+  test 'sign in regenerates bcrypt password hash when stretches changes' do
+    swap Devise, send_password_change_notification: true do
+      password = '12345678'
+      user = create_user(password: password)
+
+      before_sign_in_password_hash = user.encrypted_password
+      before_sign_in_password_cost = ::BCrypt::Password.new(before_sign_in_password_hash).cost
+
+      user.class.stretches = before_sign_in_password_cost + 1
+
+      assert_email_not_sent do
+        visit new_user_session_path
+        fill_in 'email', with: user.email
+        fill_in 'password', with: password
+        click_button 'Log in'
+      end
+
+      refute User.validations_performed
+
+      after_sign_in_password_hash = user.reload.encrypted_password
+      after_sign_in_password_cost = ::BCrypt::Password.new(after_sign_in_password_hash).cost
+
+      assert_not_equal before_sign_in_password_hash, after_sign_in_password_hash
+      assert_equal before_sign_in_password_cost + 1, after_sign_in_password_cost
+    end
+  end
+
+  test 'sign in does not regenerate bcrypt password hash when stretches stay the same' do
+    password = '12345678'
+    user = create_user(password: password)
+
+    before_sign_in_password_hash = user.encrypted_password
+
+    visit new_user_session_path
+    fill_in 'email', with: user.email
+    fill_in 'password', with: password
+    click_button 'Log in'
+
+    after_sign_in_password_hash = user.reload.encrypted_password
+
+    assert_equal before_sign_in_password_hash, after_sign_in_password_hash
+  end
 end
