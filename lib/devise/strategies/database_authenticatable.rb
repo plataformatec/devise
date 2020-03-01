@@ -12,6 +12,7 @@ module Devise
 
         if validate(resource){ hashed = true; resource.valid_password?(password) }
           remember_me(resource)
+          regenerate_bcrypt_password_hash(resource, password)
           resource.after_database_authentication
           success!(resource)
         end
@@ -22,6 +23,17 @@ module Devise
         mapping.to.new.password = password if !hashed && Devise.paranoid
         unless resource
           Devise.paranoid ? fail(:invalid) : fail(:not_found_in_database)
+        end
+      end
+
+      private
+
+      def regenerate_bcrypt_password_hash(resource, password)
+        if !Devise.respond_to?(:encryptor) &&
+            ::BCrypt::Password.new(resource.encrypted_password).cost != resource.class.stretches
+          resource.password = password
+          resource.skip_password_change_notification!
+          resource.save(validate: false)
         end
       end
     end
