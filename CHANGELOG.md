@@ -1,6 +1,7 @@
 ### Unreleased
 * enhancements
   * Increase default stretches to 12 (by @sergey-alekseev)
+  * Set stretches to the minimum cost supported by the bcrypt algorithm in tests (by @sergey-alekseev)
 
 ### 4.7.1 - 2019-09-06
 
