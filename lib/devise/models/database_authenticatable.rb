@@ -42,7 +42,7 @@ module Devise
       def initialize(*args, &block)
         @skip_email_changed_notification = false
         @skip_password_change_notification = false
-        super 
+        super
       end
 
       # Skips sending the email changed notification after_update
@@ -56,7 +56,7 @@ module Devise
       end
 
       def self.required_fields(klass)
-        [:encrypted_password] + klass.authentication_keys
+        [Devise.password_field] + klass.authentication_keys
       end
 
       # Generates a hashed password based on the given value.
@@ -64,12 +64,12 @@ module Devise
       # the hashed password.
       def password=(new_password)
         @password = new_password
-        self.encrypted_password = password_digest(@password) if @password.present?
+        send("#{Devise.password_field}=", password_digest(@password)) if @password.present?
       end
 
       # Verifies whether a password (ie from sign in) is the user password.
       def valid_password?(password)
-        Devise::Encryptor.compare(self.class, encrypted_password, password)
+        Devise::Encryptor.compare(self.class, send(Devise.password_field), password)
       end
 
       # Set password and password confirmation to nil
@@ -174,7 +174,7 @@ module Devise
 
       # A reliable way to expose the salt regardless of the implementation.
       def authenticatable_salt
-        encrypted_password[0,29] if encrypted_password
+        send(Devise.password_field)[0,29] if send(Devise.password_field)
       end
 
       if Devise.activerecord51?
@@ -217,11 +217,11 @@ module Devise
 
       if Devise.activerecord51?
         def send_password_change_notification?
-          self.class.send_password_change_notification && saved_change_to_encrypted_password? && !@skip_password_change_notification
+          self.class.send_password_change_notification && send("saved_change_to_#{Devise.password_field}?") && !@skip_password_change_notification
         end
       else
         def send_password_change_notification?
-          self.class.send_password_change_notification && encrypted_password_changed? && !@skip_password_change_notification
+          self.class.send_password_change_notification && send("#{Devise.password_field}_changed?") && !@skip_password_change_notification
         end
       end
 

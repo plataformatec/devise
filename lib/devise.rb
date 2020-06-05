@@ -297,6 +297,15 @@ module Devise
   mattr_accessor :sign_in_after_change_password
   @@sign_in_after_change_password = true
 
+  # When true, use password_hash field instead of encrypted_password
+  mattr_accessor :use_password_hash_field
+  @@use_password_hash_field = false
+
+  # Get name of password attribute
+  def self.password_field
+    use_password_hash_field ? :password_hash : :encrypted_password
+  end
+
   def self.rails51? # :nodoc:
     Rails.gem_version >= Gem::Version.new("5.1.x")
   end

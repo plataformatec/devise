@@ -24,7 +24,7 @@ module Mongoid
 <<RUBY
   ## Database authenticatable
   field :email,              type: String, default: ""
-  field :encrypted_password, type: String, default: ""
+  field :#{Devise.password_field}, type: String, default: ""
 
   ## Recoverable
   field :reset_password_token,   type: String

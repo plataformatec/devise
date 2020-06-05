@@ -20,6 +20,13 @@ gemfile:
   - gemfiles/Gemfile.rails-4.1-stable
 
 matrix:
+  include:
+    - rvm: 2.6.0
+      gemfile: Gemfile
+      env: DEVISE_ORM=active_record DEVISE_PASSWORD_HASH=t
+    - rvm: 2.5.3
+      gemfile: gemfiles/Gemfile.rails-4.2-stable
+      env: DEVISE_ORM=mongoid DEVISE_PASSWORD_HASH=t
   exclude:
     - rvm: 2.1.10
       gemfile: Gemfile

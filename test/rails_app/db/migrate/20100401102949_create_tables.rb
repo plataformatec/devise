@@ -12,7 +12,7 @@ class CreateTables < superclass
 
       ## Database authenticatable
       t.string :email,              null: false, default: ""
-      t.string :encrypted_password, null: false, default: ""
+      t.string Devise.password_field, null: false, default: ""
 
       ## Recoverable
       t.string   :reset_password_token
@@ -45,7 +45,7 @@ class CreateTables < superclass
     create_table :admins do |t|
       ## Database authenticatable
       t.string :email,              null: true
-      t.string :encrypted_password, null: true
+      t.string Devise.password_field, null: true
 
       ## Recoverable
       t.string   :reset_password_token

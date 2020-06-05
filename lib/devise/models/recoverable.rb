@@ -101,7 +101,7 @@ module Devise
 
         if Devise.activerecord51?
           def clear_reset_password_token?
-            encrypted_password_changed = respond_to?(:will_save_change_to_encrypted_password?) && will_save_change_to_encrypted_password?
+            encrypted_password_changed = respond_to?("will_save_change_to_#{Devise.password_field}?") && send("will_save_change_to_#{Devise.password_field}?")
             authentication_keys_changed = self.class.authentication_keys.any? do |attribute|
               respond_to?("will_save_change_to_#{attribute}?") && send("will_save_change_to_#{attribute}?")
             end
@@ -110,7 +110,7 @@ module Devise
           end
         else
           def clear_reset_password_token?
-            encrypted_password_changed = respond_to?(:encrypted_password_changed?) && encrypted_password_changed?
+            encrypted_password_changed = respond_to?("#{Devise.password_field}_changed?") && send("#{Devise.password_field}_changed?")
             authentication_keys_changed = self.class.authentication_keys.any? do |attribute|
               respond_to?("#{attribute}_changed?") && send("#{attribute}_changed?")
             end

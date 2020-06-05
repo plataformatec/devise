@@ -9,7 +9,7 @@ class Admin
 
   ## Database authenticatable
   field :email,              type: String
-  field :encrypted_password, type: String
+  field Devise.password_field, type: String
 
   ## Recoverable
   field :reset_password_token,   type: String

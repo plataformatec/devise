@@ -87,6 +87,9 @@ Devise.setup do |config|
   # Defines which key will be used when confirming an account
   # config.confirmation_keys = [:email]
 
+  # Use password_hash field instead of encrypted_password
+  config.use_password_hash_field = ENV["DEVISE_PASSWORD_HASH"].present?
+
   # ==> Configuration for :rememberable
   # The time the user will be remembered without asking for credentials again.
   # config.remember_for = 2.weeks

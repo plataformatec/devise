@@ -103,31 +103,31 @@ class DatabaseAuthenticatableTest < ActiveSupport::TestCase
 
   test 'should generate a hashed password while setting password' do
     user = new_user
-    assert_present user.encrypted_password
+    assert_present user.send(Devise.password_field)
   end
 
   test 'should support custom hashing methods' do
     user = UserWithCustomHashing.new(password: '654321')
-    assert_equal user.encrypted_password, '123456'
+    assert_equal user.send(Devise.password_field), '123456'
   end
 
   test 'allow authenticatable_salt to work even with nil hashed password' do
     user = User.new
-    user.encrypted_password = nil
+    user.send("#{Devise.password_field}=", nil)
     assert_nil user.authenticatable_salt
   end
 
   test 'should not generate a hashed password if password is blank' do
-    assert_blank new_user(password: nil).encrypted_password
-    assert_blank new_user(password: '').encrypted_password
+    assert_blank new_user(password: nil).send(Devise.password_field)
+    assert_blank new_user(password: '').send(Devise.password_field)
   end
 
   test 'should hash password again if password has changed' do
     user = create_user
-    encrypted_password = user.encrypted_password
+    encrypted_password = user.send(Devise.password_field)
     user.password = user.password_confirmation = 'new_password'
     user.save!
-    assert_not_equal encrypted_password, user.encrypted_password
+    assert_not_equal encrypted_password, user.send(Devise.password_field)
   end
 
   test 'should test for a valid password' do
@@ -138,13 +138,13 @@ class DatabaseAuthenticatableTest < ActiveSupport::TestCase
 
   test 'should not raise error with an empty password' do
     user = create_user
-    user.encrypted_password = ''
+    user.send("#{Devise.password_field}=", '')
     assert_nothing_raised { user.valid_password?('12345678') }
   end
 
   test 'should be an invalid password if the user has an empty password' do
     user = create_user
-    user.encrypted_password = ''
+    user.send("#{Devise.password_field}=", '')
     refute user.valid_password?('654321')
   end
 
@@ -292,17 +292,17 @@ class DatabaseAuthenticatableTest < ActiveSupport::TestCase
     assert !user.valid?
   end
 
-  test 'required_fields should be encryptable_password and the email field by default' do
+  test 'required_fields should be password and the email field by default' do
     assert_equal Devise::Models::DatabaseAuthenticatable.required_fields(User), [
-      :encrypted_password,
+      Devise.password_field,
       :email
     ]
   end
 
-  test 'required_fields should be encryptable_password and the login when the login is on authentication_keys' do
+  test 'required_fields should be password and the login when the login is on authentication_keys' do
     swap Devise, authentication_keys: [:login] do
       assert_equal Devise::Models::DatabaseAuthenticatable.required_fields(User), [
-        :encrypted_password,
+        Devise.password_field,
         :login
       ]
     end
