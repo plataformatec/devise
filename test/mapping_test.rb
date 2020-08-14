@@ -117,7 +117,7 @@ class MappingTest < ActiveSupport::TestCase
     assert mapping.authenticatable?
     assert mapping.recoverable?
     assert mapping.lockable?
-    refute mapping.omniauthable?
+    assert_not mapping.omniauthable?
   end
 
   test 'find mapping by path' do

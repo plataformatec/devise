@@ -133,7 +133,7 @@ class DatabaseAuthenticatableTest < ActiveSupport::TestCase
   test 'should test for a valid password' do
     user = create_user
     assert user.valid_password?('12345678')
-    refute user.valid_password?('654321')
+    assert_not user.valid_password?('654321')
   end
 
   test 'should not raise error with an empty password' do
@@ -145,7 +145,7 @@ class DatabaseAuthenticatableTest < ActiveSupport::TestCase
   test 'should be an invalid password if the user has an empty password' do
     user = create_user
     user.encrypted_password = ''
-    refute user.valid_password?('654321')
+    assert_not user.valid_password?('654321')
   end
 
   test 'should respond to current password' do
@@ -161,7 +161,7 @@ class DatabaseAuthenticatableTest < ActiveSupport::TestCase
 
   test 'should add an error to current password when it is invalid' do
     user = create_user
-    refute user.update_with_password(current_password: 'other',
+    assert_not user.update_with_password(current_password: 'other',
       password: 'pass4321', password_confirmation: 'pass4321')
     assert user.reload.valid_password?('12345678')
     assert_match "is invalid", user.errors[:current_password].join
@@ -169,7 +169,7 @@ class DatabaseAuthenticatableTest < ActiveSupport::TestCase
 
   test 'should add an error to current password when it is blank' do
     user = create_user
-    refute user.update_with_password(password: 'pass4321',
+    assert_not user.update_with_password(password: 'pass4321',
       password_confirmation: 'pass4321')
     assert user.reload.valid_password?('12345678')
     assert_match "can't be blank", user.errors[:current_password].join
@@ -179,7 +179,7 @@ class DatabaseAuthenticatableTest < ActiveSupport::TestCase
     user = UserWithValidation.create!(valid_attributes)
     user.save
     assert user.persisted?
-    refute user.update_with_password(username: "")
+    assert_not user.update_with_password(username: "")
     assert_match "usertest", user.reload.username
     assert_match "can't be blank", user.errors[:username].join
   end
@@ -192,14 +192,14 @@ class DatabaseAuthenticatableTest < ActiveSupport::TestCase
 
   test 'should not update password with invalid confirmation' do
     user = create_user
-    refute user.update_with_password(current_password: '12345678',
+    assert_not user.update_with_password(current_password: '12345678',
       password: 'pass4321', password_confirmation: 'other')
     assert user.reload.valid_password?('12345678')
   end
 
   test 'should clean up password fields on failure' do
     user = create_user
-    refute user.update_with_password(current_password: '12345678',
+    assert_not user.update_with_password(current_password: '12345678',
       password: 'pass4321', password_confirmation: 'other')
     assert user.password.blank?
     assert user.password_confirmation.blank?
@@ -226,14 +226,14 @@ class DatabaseAuthenticatableTest < ActiveSupport::TestCase
 
   test 'should not destroy user with invalid password' do
     user = create_user
-    refute user.destroy_with_password('other')
+    assert_not user.destroy_with_password('other')
     assert user.persisted?
     assert_match "is invalid", user.errors[:current_password].join
   end
 
   test 'should not destroy user with blank password' do
     user = create_user
-    refute user.destroy_with_password(nil)
+    assert_not user.destroy_with_password(nil)
     assert user.persisted?
     assert_match "can't be blank", user.errors[:current_password].join
   end

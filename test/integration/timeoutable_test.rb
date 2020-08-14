@@ -58,7 +58,7 @@ class SessionTimeoutTest < Devise::IntegrationTest
 
       get users_path
       assert_redirected_to users_path
-      refute warden.authenticated?(:user)
+      assert_not warden.authenticated?(:user)
       assert warden.authenticated?(:admin)
     end
   end
@@ -72,8 +72,8 @@ class SessionTimeoutTest < Devise::IntegrationTest
       assert_not_nil last_request_at
 
       get root_path
-      refute warden.authenticated?(:user)
-      refute warden.authenticated?(:admin)
+      assert_not warden.authenticated?(:user)
+      assert_not warden.authenticated?(:admin)
     end
   end
 
@@ -110,7 +110,7 @@ class SessionTimeoutTest < Devise::IntegrationTest
 
     assert_response :success
     assert_contain 'Sign in'
-    refute warden.authenticated?(:user)
+    assert_not warden.authenticated?(:user)
   end
 
   test 'time out is not triggered on sign in' do
@@ -136,7 +136,7 @@ class SessionTimeoutTest < Devise::IntegrationTest
       get expire_user_path(user)
       get users_path
       assert_redirected_to users_path
-      refute warden.authenticated?(:user)
+      assert_not warden.authenticated?(:user)
     end
   end
 

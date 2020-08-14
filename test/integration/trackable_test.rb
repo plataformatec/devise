@@ -6,7 +6,7 @@ class TrackableHooksTest < Devise::IntegrationTest
   test "trackable should not run model validations" do
     sign_in_as_user
 
-    refute User.validations_performed
+    assert_not User.validations_performed
   end
 
   test "current and last sign in timestamps are updated on each sign in" do

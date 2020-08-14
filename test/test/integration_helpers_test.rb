@@ -18,7 +18,7 @@ class TestIntegrationsHelpersTest < Devise::IntegrationTest
     sign_out user
 
     visit '/'
-    refute warden.authenticated?(:user)
+    assert_not warden.authenticated?(:user)
   end
 
   test '#sign_out does not signs out other scopes' do
@@ -28,7 +28,7 @@ class TestIntegrationsHelpersTest < Devise::IntegrationTest
 
     visit '/'
 
-    refute warden.authenticated?(:user)
+    assert_not warden.authenticated?(:user)
     assert warden.authenticated?(:admin)
   end
 end

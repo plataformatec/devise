@@ -71,8 +71,8 @@ class DeviseTest < ActiveSupport::TestCase
   test 'add new module using the helper method' do
     Devise.add_module(:coconut)
     assert_equal 1, Devise::ALL.select { |v| v == :coconut }.size
-    refute Devise::STRATEGIES.include?(:coconut)
-    refute defined?(Devise::Models::Coconut)
+    assert_not Devise::STRATEGIES.include?(:coconut)
+    assert_not defined?(Devise::Models::Coconut)
     Devise::ALL.delete(:coconut)
 
     Devise.add_module(:banana, strategy: :fruits)
@@ -88,11 +88,11 @@ class DeviseTest < ActiveSupport::TestCase
 
   test 'should complain when comparing empty or different sized passes' do
     [nil, ""].each do |empty|
-      refute Devise.secure_compare(empty, "something")
-      refute Devise.secure_compare("something", empty)
-      refute Devise.secure_compare(empty, empty)
+      assert_not Devise.secure_compare(empty, "something")
+      assert_not Devise.secure_compare("something", empty)
+      assert_not Devise.secure_compare(empty, empty)
     end
-    refute Devise.secure_compare("size_1", "size_four")
+    assert_not Devise.secure_compare("size_1", "size_four")
   end
 
   test 'Devise.email_regexp should match valid email addresses' do

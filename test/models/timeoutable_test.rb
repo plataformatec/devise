@@ -9,11 +9,11 @@ class TimeoutableTest < ActiveSupport::TestCase
   end
 
   test 'should not be expired' do
-    refute new_user.timedout?(29.minutes.ago)
+    assert_not new_user.timedout?(29.minutes.ago)
   end
 
   test 'should not be expired when params is nil' do
-    refute new_user.timedout?(nil)
+    assert_not new_user.timedout?(nil)
   end
 
   test 'should use timeout_in method' do
@@ -21,23 +21,23 @@ class TimeoutableTest < ActiveSupport::TestCase
     user.instance_eval { def timeout_in; 10.minutes end }
 
     assert user.timedout?(12.minutes.ago)
-    refute user.timedout?(8.minutes.ago)
+    assert_not user.timedout?(8.minutes.ago)
   end
 
   test 'should not be expired when timeout_in method returns nil' do
     user = new_user
     user.instance_eval { def timeout_in; nil end }
-    refute user.timedout?(10.hours.ago)
+    assert_not user.timedout?(10.hours.ago)
   end
 
   test 'fallback to Devise config option' do
     swap Devise, timeout_in: 1.minute do
       user = new_user
       assert user.timedout?(2.minutes.ago)
-      refute user.timedout?(30.seconds.ago)
+      assert_not user.timedout?(30.seconds.ago)
 
       Devise.timeout_in = 5.minutes
-      refute user.timedout?(2.minutes.ago)
+      assert_not user.timedout?(2.minutes.ago)
       assert user.timedout?(6.minutes.ago)
     end
   end

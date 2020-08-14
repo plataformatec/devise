@@ -12,7 +12,7 @@ class PasswordTest < Devise::IntegrationTest
   def request_forgot_password(&block)
     visit_new_password_path
     assert_response :success
-    refute warden.authenticated?(:user)
+    assert_not warden.authenticated?(:user)
 
     fill_in 'email', with: 'user@test.com'
     yield if block_given?
@@ -160,7 +160,7 @@ class PasswordTest < Devise::IntegrationTest
     assert_current_url '/users/password'
     assert_have_selector '#error_explanation'
     assert_contain %r{Reset password token(.*)invalid}
-    refute user.reload.valid_password?('987654321')
+    assert_not user.reload.valid_password?('987654321')
   end
 
   test 'not authenticated user with valid reset password token but invalid password should not be able to change their password' do
@@ -174,7 +174,7 @@ class PasswordTest < Devise::IntegrationTest
     assert_current_url '/users/password'
     assert_have_selector '#error_explanation'
     assert_contain "Password confirmation doesn't match Password"
-    refute user.reload.valid_password?('987654321')
+    assert_not user.reload.valid_password?('987654321')
   end
 
   test 'not authenticated user with valid data should be able to change their password' do
@@ -194,7 +194,7 @@ class PasswordTest < Devise::IntegrationTest
     reset_password {  fill_in 'Confirm new password', with: 'other_password' }
     assert_response :success
     assert_have_selector '#error_explanation'
-    refute user.reload.valid_password?('987654321')
+    assert_not user.reload.valid_password?('987654321')
 
     reset_password visit: false
     assert_contain 'Your password has been changed successfully.'

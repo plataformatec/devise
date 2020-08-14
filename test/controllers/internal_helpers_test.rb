@@ -121,7 +121,7 @@ class HelpersTest < Devise::ControllerTestCase
     MyController.send(:public, :navigational_formats)
 
     swap Devise, navigational_formats: ['*/*', :html] do
-      refute @controller.navigational_formats.include?("*/*")
+      assert_not @controller.navigational_formats.include?("*/*")
     end
 
     MyController.send(:protected, :navigational_formats)

@@ -98,7 +98,7 @@ class ControllerAuthenticatableTest < Devise::ControllerTestCase
 
   test 'proxy admin_signed_in? to authenticatewith admin scope' do
     @mock_warden.expects(:authenticate).with(scope: :admin)
-    refute @controller.admin_signed_in?
+    assert_not @controller.admin_signed_in?
   end
 
   test 'proxy publisher_account_signed_in? to authenticate with namespaced publisher account scope' do
@@ -319,10 +319,10 @@ class ControllerAuthenticatableTest < Devise::ControllerTestCase
 
   test 'is_flashing_format? is guarded against flash (middleware) not being loaded' do
     @controller.request.expects(:respond_to?).with(:flash).returns(false)
-    refute @controller.is_flashing_format?
+    assert_not @controller.is_flashing_format?
   end
 
   test 'is not a devise controller' do
-    refute @controller.devise_controller?
+    assert_not @controller.devise_controller?
   end
 end

@@ -66,11 +66,11 @@ class RegistrationTest < Devise::IntegrationTest
     assert_not_contain 'You have to confirm your account before continuing'
     assert_current_url "/"
 
-    refute warden.authenticated?(:user)
+    assert_not warden.authenticated?(:user)
 
     user = User.to_adapter.find_first(order: [:id, :desc])
     assert_equal user.email, 'new_user@test.com'
-    refute user.confirmed?
+    assert_not user.confirmed?
   end
 
   test 'a guest user should receive the confirmation instructions from the default mailer' do
@@ -94,7 +94,7 @@ class RegistrationTest < Devise::IntegrationTest
     click_button 'Sign up'
 
     assert_current_url "/?custom=1"
-    refute warden.authenticated?(:user)
+    assert_not warden.authenticated?(:user)
   end
 
   test 'a guest user cannot sign up with invalid information' do
@@ -116,7 +116,7 @@ class RegistrationTest < Devise::IntegrationTest
     assert_contain "2 errors prohibited"
     assert_nil User.to_adapter.find_first
 
-    refute warden.authenticated?(:user)
+    assert_not warden.authenticated?(:user)
   end
 
   test 'a guest should not sign up with email/password that already exists' do
@@ -135,7 +135,7 @@ class RegistrationTest < Devise::IntegrationTest
     assert_current_url '/users'
     assert_contain(/Email.*already.*taken/)
 
-    refute warden.authenticated?(:user)
+    assert_not warden.authenticated?(:user)
   end
 
   test 'a guest should not be able to change account' do
@@ -191,7 +191,7 @@ class RegistrationTest < Devise::IntegrationTest
 
       assert_contain 'Your account has been updated successfully, but since your password was changed, you need to sign in again'
       assert_equal new_user_session_path, @request.path
-      refute warden.authenticated?(:user)
+      assert_not warden.authenticated?(:user)
     end
   end
 
@@ -252,7 +252,7 @@ class RegistrationTest < Devise::IntegrationTest
     click_button 'Update'
 
     assert_contain "Password confirmation doesn't match Password"
-    refute User.to_adapter.find_first.valid_password?('pas123')
+    assert_not User.to_adapter.find_first.valid_password?('pas123')
   end
   
   test 'a signed in user should see a warning about minimum password length' do

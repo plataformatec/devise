@@ -15,7 +15,7 @@ class ActiveRecordTest < ActiveSupport::TestCase
     end
 
     (Devise::ALL - modules).each do |mod|
-      refute include_module?(klass, mod)
+      assert_not include_module?(klass, mod)
     end
   end
 

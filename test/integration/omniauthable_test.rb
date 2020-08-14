@@ -49,7 +49,7 @@ class OmniauthableIntegrationTest < Devise::IntegrationTest
       click_link "Sign in with FaceBook"
       assert warden.authenticated?(:user)
 
-      refute User.validations_performed
+      assert_not User.validations_performed
     end
   end
 
@@ -84,7 +84,7 @@ class OmniauthableIntegrationTest < Devise::IntegrationTest
     assert_current_url "/"
     assert_contain "You have signed up successfully."
     assert_contain "Hello User user@example.com"
-    refute session["devise.facebook_data"]
+    assert_not session["devise.facebook_data"]
   end
 
   test "cleans up session on cancel" do

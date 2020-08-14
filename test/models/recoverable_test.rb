@@ -94,14 +94,14 @@ class RecoverableTest < ActiveSupport::TestCase
     user = create_user
     user.send_reset_password_instructions
     assert_present user.reset_password_token
-    refute user.reset_password('123456789', '987654321')
+    assert_not user.reset_password('123456789', '987654321')
     assert_present user.reset_password_token
   end
 
   test 'should not reset password with invalid data' do
     user = create_user
     user.stubs(:valid?).returns(false)
-    refute user.reset_password('123456789', '987654321')
+    assert_not user.reset_password('123456789', '987654321')
   end
 
   test 'should reset reset password token and send instructions by email' do
@@ -121,7 +121,7 @@ class RecoverableTest < ActiveSupport::TestCase
 
   test 'should return a new record with errors if user was not found by e-mail' do
     reset_password_user = User.send_reset_password_instructions(email: "invalid@example.com")
-    refute reset_password_user.persisted?
+    assert_not reset_password_user.persisted?
     assert_equal "not found", reset_password_user.errors[:email].join
   end
 
@@ -137,7 +137,7 @@ class RecoverableTest < ActiveSupport::TestCase
       swap Devise, reset_password_keys: [:username, :email] do
           user = create_user
           reset_password_user = User.send_reset_password_instructions(email: user.email)
-          refute reset_password_user.persisted?
+          assert_not reset_password_user.persisted?
           assert_equal "can't be blank", reset_password_user.errors[:username].join
       end
   end
@@ -166,13 +166,13 @@ class RecoverableTest < ActiveSupport::TestCase
 
   test 'should return a new record with errors if no reset_password_token is found' do
     reset_password_user = User.reset_password_by_token(reset_password_token: 'invalid_token')
-    refute reset_password_user.persisted?
+    assert_not reset_password_user.persisted?
     assert_equal "is invalid", reset_password_user.errors[:reset_password_token].join
   end
 
   test 'should return a new record with errors if reset_password_token is blank' do
     reset_password_user = User.reset_password_by_token(reset_password_token: '')
-    refute reset_password_user.persisted?
+    assert_not reset_password_user.persisted?
     assert_match "can't be blank", reset_password_user.errors[:reset_password_token].join
   end
 
@@ -181,7 +181,7 @@ class RecoverableTest < ActiveSupport::TestCase
     raw  = user.send_reset_password_instructions
 
     reset_password_user = User.reset_password_by_token(reset_password_token: raw, password: '')
-    refute reset_password_user.errors.empty?
+    assert_not reset_password_user.errors.empty?
     assert_match "can't be blank", reset_password_user.errors[:password].join
     assert_equal raw, reset_password_user.reset_password_token
   end
@@ -191,7 +191,7 @@ class RecoverableTest < ActiveSupport::TestCase
     raw  = user.send_reset_password_instructions
 
     reset_password_user = User.reset_password_by_token(reset_password_token: raw)
-    refute reset_password_user.errors.empty?
+    assert_not reset_password_user.errors.empty?
     assert_match "can't be blank", reset_password_user.errors[:password].join
     assert_equal raw, reset_password_user.reset_password_token
   end
@@ -209,7 +209,7 @@ class RecoverableTest < ActiveSupport::TestCase
     assert_nil reset_password_user.reset_password_token
 
     user.reload
-    refute user.valid_password?(old_password)
+    assert_not user.valid_password?(old_password)
     assert user.valid_password?('new_password')
     assert_nil user.reset_password_token
   end
@@ -231,7 +231,7 @@ class RecoverableTest < ActiveSupport::TestCase
       user.reload
 
       assert user.valid_password?(old_password)
-      refute user.valid_password?('new_password')
+      assert_not user.valid_password?('new_password')
       assert_equal "has expired, please request a new one", reset_password_user.errors[:reset_password_token].join
     end
   end
