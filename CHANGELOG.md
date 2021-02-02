@@ -1,6 +1,34 @@
 ### unreleased
 
 * enhancements
+  * Devise now treats `:turbo_stream` as a navigational format.
+    - For Turbo Drive users this ensures that Devise will return a redirect, rather than a `401`, where appropriate (this may be a **breaking change**).
+    - This has no impact if you are not using [turbo-rails](https://github.com/hotwired/turbo-rails) or declaring an equivalent MIME type.
+  * Devise `FailureApp` now returns a `422` status when running the `recall` flow.
+    - This, combined with https://github.com/heartcombo/responders/pull/223, enables Devise to work correctly with the [new Rails defaults](https://github.com/rails/rails/pull/41026) for form errors, as well as with new libraries like Turbo.
+    - By default, the `recall` flow only runs on the [`SessionsController`](https://github.com/heartcombo/devise/blob/v4.7.3/app/controllers/devise/sessions_controller.rb#L48), but you should check if it is required in other flows too.
+    - This may be a **breaking change**.
+    - If you want to keep the old behavior, or return a different code, you can override `recall_response_code` in a custom failure app:
+
+    ```ruby
+    # config/initializers/devise.rb
+    class MyFailureApp < Devise::FailureApp
+      def recall_response_code(app_response_code)
+        # Return any HTTP status code you like, or return `app_response_code` to keep whatever your app returned and not override it.
+        # By default this method returns `422`.
+        app_response_code
+      end
+    end
+
+    Devise.setup do |config|
+      # ...
+      config.warden do |manager|
+        manager.failure_app = MyFailureApp
+      end
+      # ...
+    end
+    ```
+
   * Devise now enables the upgrade of OmniAuth 2+. Previously Devise would raise an error if you'd try to upgrade. Please note that OmniAuth 2 is considered a security upgrade and recommended to everyone. You can read more about the details (and possible necessary changes to your app as part of the upgrade) in [their release notes](https://github.com/omniauth/omniauth/releases/tag/v2.0.0). [Devise's OmniAuth Overview wiki](https://github.com/heartcombo/devise/wiki/OmniAuth:-Overview) was also updated to cover OmniAuth 2.0 requirements.
     - Note that the upgrade required Devise shared links that initiate the OmniAuth flow to be changed to `method: :post`, which is now a requirement for OmniAuth, part of the security improvement. If you have copied and customized the Devise shared links partial to your app, or if you have other links in your app that initiate the OmniAuth flow, they will have to be updated to use `method: :post`, or changed to use buttons (e.g. `button_to`) to work with OmniAuth 2. (if you're using links with `method: :post`, make sure your app has `rails-ujs` or `jquery-ujs` included in order for these links to work properly.)
     - As part of the OmniAuth 2.0 upgrade you might also need to add the [`omniauth-rails_csrf_protection`](https://github.com/cookpad/omniauth-rails_csrf_protection) gem to your app if you don't have it already. (and you don't want to roll your own code to verify requests.) Check the OmniAuth v2 release notes for more info.

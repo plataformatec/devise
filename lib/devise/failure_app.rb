@@ -71,7 +71,9 @@ module Devise
       end
 
       flash.now[:alert] = i18n_message(:invalid) if is_flashing_format?
-      self.response = recall_app(warden_options[:recall]).call(request.env)
+      response_from_app = recall_app(warden_options[:recall]).call(request.env)
+      response_from_app[0] = recall_response_code(response_from_app[0])
+      self.response = response_from_app
     end
 
     def redirect
@@ -88,6 +90,10 @@ module Devise
     end
 
   protected
+
+    def recall_response_code(_original_response_code)
+      422
+    end
 
     def i18n_options(options)
       options
@@ -167,7 +173,7 @@ module Devise
     end
 
     def skip_format?
-      %w(html */*).include? request_format.to_s
+      %w(html turbo_stream */*).include? request_format.to_s
     end
 
     # Choose whether we should respond in an HTTP authentication fashion,

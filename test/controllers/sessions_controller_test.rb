@@ -19,7 +19,7 @@ class SessionsControllerTest < Devise::ControllerTestCase
           password: "wrongpassword"
         }
       }
-      assert_equal 200, @response.status
+      assert_equal 422, @response.status
     ensure
       ActiveSupport::Notifications.unsubscribe(subscriber)
     end
@@ -29,7 +29,7 @@ class SessionsControllerTest < Devise::ControllerTestCase
     swap Devise, scoped_views: true do
       request.env["devise.mapping"] = Devise.mappings[:user]
       post :create
-      assert_equal 200, @response.status
+      assert_equal 422, @response.status
       assert_template "users/sessions/new"
     end
   end
@@ -70,7 +70,7 @@ class SessionsControllerTest < Devise::ControllerTestCase
         password: "wevdude"
       }
     }
-    assert_equal 200, @response.status
+    assert_equal 422, @response.status
     assert_template "devise/sessions/new"
   end
 
