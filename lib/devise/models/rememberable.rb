@@ -63,7 +63,7 @@ module Devise
       end
 
       def remember_expires_at
-        self.class.remember_for.from_now
+        remember_for.from_now
       end
 
       def extend_remember_period
@@ -114,9 +114,13 @@ module Devise
         # 4. the token date is bigger than the remember_created_at
         # 5. the token matches
         generated_at.is_a?(Time) &&
-         (self.class.remember_for.ago < generated_at) &&
+         (remember_for.ago < generated_at) &&
          (generated_at > (remember_created_at || Time.now).utc) &&
          Devise.secure_compare(rememberable_value, token)
+      end
+
+      def remember_for
+        self.class.remember_for
       end
 
       private

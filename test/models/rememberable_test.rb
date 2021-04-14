@@ -176,6 +176,12 @@ class RememberableTest < ActiveSupport::TestCase
     end
   end
 
+  test 'remember_for can be set dynamically' do
+    resource = create_resource
+    resource.instance_eval { def remember_for; 3.days end }
+    assert_equal 3.days.from_now.to_date, resource.remember_expires_at.to_date
+  end
+
   test 'should have the required_fields array' do
     assert_equal [
       :remember_created_at
