@@ -297,6 +297,10 @@ module Devise
   mattr_accessor :sign_in_after_change_password
   @@sign_in_after_change_password = true
 
+  # When set to true, calling current_user will attempt to authenticate the user
+  mattr_accessor :current_user_attempts_login
+  @@current_user_attempts_login = true
+
   def self.activerecord51? # :nodoc:
     defined?(ActiveRecord) && ActiveRecord.gem_version >= Gem::Version.new("5.1.x")
   end

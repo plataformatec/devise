@@ -58,6 +58,24 @@ class ControllerAuthenticatableTest < Devise::ControllerTestCase
     @controller.current_commenters
   end
 
+  test 'proxy current_[group] to get user with each scope' do
+    Devise.current_user_attempts_login = false
+    [:user, :admin].each do |scope|
+      @mock_warden.expects(:user).with(scope).returns(nil)
+    end
+    @controller.current_commenter
+    Devise.current_user_attempts_login = true
+  end
+
+  test 'proxy current_[plural_group] to get user with each scope' do
+    Devise.current_user_attempts_login = false
+    [:user, :admin].each do |scope|
+      @mock_warden.expects(:user).with(scope)
+    end
+    @controller.current_commenters
+    Devise.current_user_attempts_login = true
+  end
+
   test 'proxy current_publisher_account to authenticate with namespaced publisher account scope' do
     @mock_warden.expects(:authenticate).with(scope: :publisher_account)
     @controller.current_publisher_account

@@ -61,7 +61,7 @@ module Devise
               mappings = #{mappings}
               mappings.unshift mappings.delete(favorite.to_sym) if favorite
               mappings.each do |mapping|
-                current = warden.authenticate(scope: mapping)
+                current = Devise.current_user_attempts_login ? warden.authenticate(scope: mapping) : warden.user(mapping)
                 return current if current
               end
               nil
@@ -69,7 +69,7 @@ module Devise
 
             def current_#{group_name.to_s.pluralize}
               #{mappings}.map do |mapping|
-                warden.authenticate(scope: mapping)
+                Devise.current_user_attempts_login ? warden.authenticate(scope: mapping) : warden.user(mapping)
               end.compact
             end
 
