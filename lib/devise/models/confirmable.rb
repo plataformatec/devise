@@ -310,7 +310,7 @@ module Devise
         # requests the email change, instead of when the change is confirmed.
         def send_email_changed_notification?
           if self.class.reconfirmable
-            self.class.send_email_changed_notification && reconfirmation_required?
+            !@skip_email_changed_notification && self.class.send_email_changed_notification && reconfirmation_required?
           else
             super
           end

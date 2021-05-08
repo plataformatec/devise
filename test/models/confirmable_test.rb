@@ -424,6 +424,28 @@ class ReconfirmableTest < ActiveSupport::TestCase
     end
   end
 
+  test 'should not notify email on email change for reconfirmable user even when configured if skip_email_changed_notification! is invoked' do
+    swap Devise, send_email_changed_notification: true do
+      reconfirmable_user = create_admin
+      reconfirmable_user.skip_email_changed_notification!
+      reconfirmable_user.skip_confirmation_notification!
+      assert_email_not_sent do
+        assert reconfirmable_user.update(email: 'new-email@example.com')
+      end
+    end
+  end
+
+  test 'should not skip sending reconfirmation email if skip_email_changed_notification! is invoked' do
+    swap Devise, send_email_changed_notification: true do
+      reconfirmable_user = create_admin
+      reconfirmable_user.skip_email_changed_notification!
+      assert_difference 'ActionMailer::Base.deliveries.size', 1 do
+        assert reconfirmable_user.update(email: 'new-email@example.com')
+        assert_equal 'Confirmation instructions', ActionMailer::Base.deliveries.last.subject
+      end
+    end
+  end
+
   test 'should regenerate confirmation token after changing email' do
     admin = create_admin
     assert admin.confirm
