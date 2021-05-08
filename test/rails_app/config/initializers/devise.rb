@@ -101,6 +101,9 @@ Devise.setup do |config|
   # Regex to use to validate the email address
   # config.email_regexp = /^([\w\.%\+\-]+)@([\w\-]+\.)+([\w]{2,})$/i
 
+  # Option to scope the email uniqueness validator. Default is nil;
+  # config.email_scope = [:subdomain]
+
   # ==> Configuration for :timeoutable
   # The time you want to timeout the user session without activity. After this
   # time the user will be asked for credentials again. Default is 30 minutes.

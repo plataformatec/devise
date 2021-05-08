@@ -115,6 +115,10 @@ module Devise
   mattr_accessor :email_regexp
   @@email_regexp = /\A[^@\s]+@[^@\s]+\z/
 
+   # Option to scope the email uniqueness validator
+   mattr_accessor :email_scope
+   @@email_scope = nil
+
   # Range validation for password length
   mattr_accessor :password_length
   @@password_length = 6..128

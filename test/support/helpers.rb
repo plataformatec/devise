@@ -38,6 +38,10 @@ class ActiveSupport::TestCase
     User.new(valid_attributes(attributes))
   end
 
+  def new_user_with_scope(attributes = {})
+    UserWithScope.new(valid_attributes(attributes))
+  end
+
   def create_user(attributes = {})
     User.create!(valid_attributes(attributes))
   end
@@ -54,6 +58,10 @@ class ActiveSupport::TestCase
 
   def create_user_with_validations(attributes = {})
     UserWithValidations.create!(valid_attributes(attributes))
+  end
+
+  def create_user_with_scope(attributes={})
+    UserWithScope.create!(valid_attributes(attributes))
   end
 
   # Execute the block setting the given values and restoring old values after

@@ -26,6 +26,12 @@ class ValidatableTest < ActiveSupport::TestCase
     assert user.valid?
   end
 
+  test 'should allow non-unique emails using email_scope attribute' do
+    existing_user = create_user_with_scope
+    user = new_user_with_scope(email: existing_user.email, username: "New username")
+    assert user.valid?
+  end
+
   test 'should require correct email format if email has changed, allowing blank' do
     user = new_user(email: '')
     assert user.invalid?
