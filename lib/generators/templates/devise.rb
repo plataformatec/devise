@@ -169,7 +169,12 @@ Devise.setup do |config|
   # Invalidates all the remember me tokens when the user signs out.
   config.expire_all_remember_me_on_sign_out = true
 
-  # If true, extends the user's remember period when remembered via cookie.
+  # If true, extends the user's remember period every time the user makes a request.
+  # As long as the user accesses the site once every `config.remember_for`, they can
+  # stay logged in forever.
+  # If false, how long the user will be remembered for is set on initial login,
+  # and only when the user starts a new session. So users will need to log in
+  # again every `config.remember_for`.
   # config.extend_remember_period = false
 
   # Options to be passed to the created cookie. For instance, you can set

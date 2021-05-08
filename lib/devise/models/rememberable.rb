@@ -70,6 +70,10 @@ module Devise
         self.class.extend_remember_period
       end
 
+      def extend_remember_me?
+        !!self.class.extend_remember_period
+      end
+
       def rememberable_value
         if respond_to?(:remember_token)
           remember_token
