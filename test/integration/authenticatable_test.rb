@@ -313,6 +313,46 @@ class AuthenticationRedirectTest < Devise::IntegrationTest
     assert_nil session[:"user_return_to"]
   end
 
+  test 'short parameters preserved in the return_to session variable with cookie based session store' do
+    get users_path, params: { a: "123", b: "456" }
+    assert_redirected_to new_user_session_path
+    assert_equal "#{users_path}?a=123&b=456", session[:user_return_to]
+  end
+
+  test 'long parameters stripped from the return_to session variable with cookie based session store' do
+    # Generates 4 KB worth of parameters
+    long_params = 4.times.map do |i|
+      ["param#{i}", 'a' * 993] # 6 bytes + 1 byte ('=') + 993 bytes = 1000 bytes each
+    end.to_h
+
+    get users_path, params: long_params
+    assert_redirected_to new_user_session_path
+    assert_equal users_path, session[:user_return_to]
+  end
+
+  test 'long parameters not stripped from the return_to session variable with cache session store' do
+    # Disable the path stripping by stubbing the session store to something else
+    # than the cookie store.
+    Rails.application.config.stubs(:session_store).returns(ActionDispatch::Session::CacheStore)
+
+    # Prevent the cookie overflow error by increasing the MAX_COOKIE_SIZE value
+    orig_size = ActionDispatch::Cookies.send(:remove_const, :MAX_COOKIE_SIZE)
+    ActionDispatch::Cookies.const_set(:MAX_COOKIE_SIZE, 10240)
+
+    # Generates 4 KB worth of parameters
+    long_params = 4.times.map do |i|
+      ["param#{i}", 'a' * 993] # 6 bytes + 1 byte ('=') + 993 bytes = 1000 bytes each
+    end.to_h
+
+    get users_path, params: long_params
+    assert_redirected_to new_user_session_path
+    assert_equal "#{users_path}?#{long_params.to_param}", session[:user_return_to]
+
+    # Set the original value for MAX_COOKIE_SIZE
+    ActionDispatch::Cookies.send(:remove_const, :MAX_COOKIE_SIZE)
+    ActionDispatch::Cookies.const_set(:MAX_COOKIE_SIZE, orig_size)
+  end
+
   test 'redirect to configured home path for a given scope after sign in' do
     sign_in_as_admin
     assert_equal "/admin_area/home", @request.path

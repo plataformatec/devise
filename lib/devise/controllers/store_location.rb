@@ -35,7 +35,7 @@ module Devise
       #
       def store_location_for(resource_or_scope, location)
         session_key = stored_location_key_for(resource_or_scope)
-        
+
         path = extract_path_from_location(location)
         session[session_key] = path if path
       end
@@ -56,7 +56,7 @@ module Devise
       def extract_path_from_location(location)
         uri = parse_uri(location)
 
-        if uri 
+        if uri
           path = remove_domain_from_uri(uri)
           path = add_fragment_back_to_path(uri, path)
 
@@ -65,7 +65,18 @@ module Devise
       end
 
       def remove_domain_from_uri(uri)
-        [uri.path.sub(/\A\/+/, '/'), uri.query].compact.join('?')
+        path = [uri.path.sub(/\A\/+/, '/'), uri.query].compact.join('?')
+        return path unless Rails.application.config.session_store == ActionDispatch::Session::CookieStore
+
+        # Allow 3 KB size for the path because there can be also some other
+        # session variables out there (leave 1 KB for the other variables).
+        return path if path.bytesize <= ActionDispatch::Cookies::MAX_COOKIE_SIZE - 1024
+
+        # For too long paths, remove the URL parameters to avoid
+        # ActionDispatch::Cookies::CookieOverflow exception. ActionDispatch
+        # allows a maximum total cookie size of 4 KB because this is the hard
+        # limit that can be handled by all the browsers.
+        path.split("?").first
       end
 
       def add_fragment_back_to_path(uri, path)
