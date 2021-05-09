@@ -152,7 +152,8 @@ module Devise
             if recoverable.reset_password_period_valid?
               recoverable.reset_password(attributes[:password], attributes[:password_confirmation])
             else
-              recoverable.errors.add(:reset_password_token, :expired)
+              recoverable.errors.add(:reset_password_token, :expired,
+              period: Devise::TimeInflector.time_ago_in_words(self.reset_password_within.ago))
             end
           end
 

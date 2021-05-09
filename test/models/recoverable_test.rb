@@ -232,7 +232,7 @@ class RecoverableTest < ActiveSupport::TestCase
 
       assert user.valid_password?(old_password)
       refute user.valid_password?('new_password')
-      assert_equal "has expired, please request a new one", reset_password_user.errors[:reset_password_token].join
+      assert_equal "has expired and you need to reset your password within about 1 hour. Please request a new one", reset_password_user.errors[:reset_password_token].join
     end
   end
 
