@@ -232,6 +232,33 @@ class FailureTest < ActiveSupport::TestCase
         assert_equal 'http://test.host/users/sign_in.js', @response.second["Location"]
       end
     end
+
+    test 'returns to configured authentication_failure_route with symbol' do
+      swap Devise, authentication_failure_route: :root_path do
+        call_failure
+        assert_equal 302, @response.first
+        assert_equal 'You need to sign in or sign up before continuing.', @request.flash[:alert]
+        assert_equal 'http://test.host/', @response.second['Location']
+      end
+    end
+
+    test 'returns to root if configured authentication_failure_route not exists' do
+      swap Devise, authentication_failure_route: :unexists do
+        call_failure
+        assert_equal 302, @response.first
+        assert_equal 'You need to sign in or sign up before continuing.', @request.flash[:alert]
+        assert_equal 'http://test.host/', @response.second['Location']
+      end
+    end
+
+    test 'returns to configured authentication_failure_route with lambda' do
+      swap Devise, authentication_failure_route: ->(_warden_options) { :new_user_registration_url } do
+        call_failure
+        assert_equal 302, @response.first
+        assert_equal 'You need to sign in or sign up before continuing.', @request.flash[:alert]
+        assert_equal 'http://test.host/users/sign_up', @response.second['Location']
+      end
+    end
   end
 
   context 'For HTTP request' do

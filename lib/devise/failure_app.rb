@@ -129,7 +129,15 @@ module Devise
     end
 
     def route(scope)
-      :"new_#{scope}_session_url"
+      customized_route = Devise.authentication_failure_route
+
+      if customized_route.respond_to?(:call)
+        customized_route.call(warden_options)
+      elsif customized_route.respond_to?(:to_sym)
+        customized_route.to_sym
+      else
+        :"new_#{scope}_session_url"
+      end
     end
 
     def scope_url
