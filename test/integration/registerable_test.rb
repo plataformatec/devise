@@ -271,6 +271,39 @@ class RegistrationTest < Devise::IntegrationTest
     assert_empty User.to_adapter.find_all
   end
 
+  test 'a signed in user should be able to cancel their account with current password if password required' do
+    swap Devise, require_password_to_destroy: true  do
+      sign_in_as_user
+      get edit_user_registration_path
+
+      within(".destroy-password") do
+        fill_in 'current password', with: '12345678'
+      end
+
+      click_button "Cancel my account"
+      assert_contain "Bye! Your account has been successfully cancelled. We hope to see you again soon."
+    end
+    assert User.to_adapter.find_all.empty?
+  end
+
+  test 'a signed in user should not be able to cancel their account with incorrect password if password required' do
+    swap Devise, require_password_to_destroy: true  do
+      sign_in_as_user
+      get edit_user_registration_path
+
+      within(".destroy-password") do
+        fill_in 'current password', with: '87654321'
+      end
+
+      click_button "Cancel my account"
+      assert_contain "Current password is invalid"
+
+      assert_current_url '/users'
+      
+      refute User.to_adapter.find_all.empty?
+    end
+  end
+
   test 'a user should be able to cancel sign up by deleting data in the session' do
     get "/set"
     assert_equal "something", @request.session["devise.foo_bar"]

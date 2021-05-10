@@ -296,6 +296,10 @@ module Devise
   # When set to false, changing a password does not automatically sign in a user
   mattr_accessor :sign_in_after_change_password
   @@sign_in_after_change_password = true
+  
+  # When true, signed in users must provide their current password to cancel account
+  mattr_accessor :require_password_to_destroy
+  @@require_password_to_destroy = false
 
   def self.activerecord51? # :nodoc:
     defined?(ActiveRecord) && ActiveRecord.gem_version >= Gem::Version.new("5.1.x")

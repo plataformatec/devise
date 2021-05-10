@@ -19,6 +19,12 @@ class Custom::RegistrationsController < Devise::RegistrationsController
     end
   end
 
+  def destroy
+    super do |resource|
+      @destroy_block_called = true
+    end
+  end
+
   def create_block_called?
     @create_block_called == true
   end
@@ -29,5 +35,9 @@ class Custom::RegistrationsController < Devise::RegistrationsController
 
   def new_block_called?
     @new_block_called == true
+  end
+
+  def destroy_block_called?
+    @destroy_block_called == true
   end
 end

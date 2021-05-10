@@ -23,6 +23,7 @@ module Devise
         end
 
         Devise::Models.config(self, :sign_in_after_change_password)
+        Devise::Models.config(self, :require_password_to_destroy)
       end
     end
   end

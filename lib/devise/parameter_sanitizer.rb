@@ -38,7 +38,8 @@ module Devise
     DEFAULT_PERMITTED_ATTRIBUTES = {
       sign_in: [:password, :remember_me],
       sign_up: [:password, :password_confirmation],
-      account_update: [:password, :password_confirmation, :current_password]
+      account_update: [:password, :password_confirmation, :current_password],
+      account_destroy: [:current_password]
     }
 
     def initialize(resource_class, resource_name, params)
