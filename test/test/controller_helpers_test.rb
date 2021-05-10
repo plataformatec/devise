@@ -163,7 +163,6 @@ class TestControllerHelpersTest < Devise::ControllerTestCase
     sign_in first_user
     get :index
     assert_match /User ##{first_user.id}/, @response.body
-    sign_out first_user
 
     second_user = create_user
     second_user.confirm

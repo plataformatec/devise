@@ -77,6 +77,7 @@ module Devise
 
         scope ||= Devise::Mapping.find_scope!(resource)
 
+        @controller.instance_variable_set(:"@current_#{scope}", nil)
         warden.instance_variable_get(:@users).delete(scope)
         warden.session_serializer.store(resource, scope)
       end
