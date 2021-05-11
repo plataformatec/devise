@@ -117,7 +117,7 @@ module Devise
 
   # Range validation for password length
   mattr_accessor :password_length
-  @@password_length = 6..128
+  @@password_length = 8..128
 
   # The time the user will be remembered without asking for credentials again.
   mattr_accessor :remember_for
