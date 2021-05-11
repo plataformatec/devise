@@ -361,6 +361,14 @@ class ConfirmableTest < ActiveSupport::TestCase
     end
   end
 
+  test 'generate a new token on regenerate' do
+    user = create_user
+    old  = user.confirmation_token
+    user = User.find(user.id)
+    user.regenerate_confirmation_instructions
+    assert_not_equal user.confirmation_token, old
+  end
+
   test 'should call after_confirmation if confirmed' do
     user = create_user
     user.define_singleton_method :after_confirmation do

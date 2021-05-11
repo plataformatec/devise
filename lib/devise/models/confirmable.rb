@@ -130,6 +130,15 @@ module Devise
       end
 
       # Resend confirmation token.
+      # Regenerates the token.
+      def regenerate_confirmation_instructions
+        pending_any_confirmation do
+          self.confirmation_token = nil
+          send_confirmation_instructions
+        end
+      end
+
+      # Resend confirmation token.
       # Regenerates the token if the period is expired.
       def resend_confirmation_instructions
         pending_any_confirmation do
