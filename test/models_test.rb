@@ -26,8 +26,14 @@ class ActiveRecordTest < ActiveSupport::TestCase
   test 'validations options are not applied too late' do
     validators = WithValidation.validators_on :password
     length = validators.find { |v| v.kind == :length }
-    assert_equal 2, length.options[:minimum]
-    assert_equal 6, length.options[:maximum]
+
+    if Devise::Test.rails52_and_up?
+      assert_equal 2, length.options[:minimum].call
+      assert_equal 6, length.options[:maximum].call
+    else
+      assert_equal 2, length.options[:minimum]
+      assert_equal 6, length.options[:maximum]
+    end
   end
 
   test 'validations are applied just once' do

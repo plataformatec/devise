@@ -39,7 +39,11 @@ module Devise
 
           validates_presence_of     :password, if: :password_required?
           validates_confirmation_of :password, if: :password_required?
-          validates_length_of       :password, within: password_length, allow_blank: true
+          if Devise.rails52?
+            validates_length_of :password, maximum: proc { password_length.max }, minimum: proc { password_length.min }, allow_blank: true
+          else
+            validates_length_of :password, within: password_length, allow_blank: true
+          end
         end
       end
 
