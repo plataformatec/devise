@@ -20,11 +20,11 @@ class Devise::RegistrationsController < DeviseController
     yield resource if block_given?
     if resource.persisted?
       if resource.active_for_authentication?
-        set_flash_message! :notice, :signed_up
+        set_flash_message!(:notice, :signed_up)
         sign_up(resource_name, resource)
         respond_with resource, location: after_sign_up_path_for(resource)
       else
-        set_flash_message! :notice, :"signed_up_but_#{resource.inactive_message}"
+        set_flash_message!(:notice, :"signed_up_but_#{resource.inactive_message}")
         expire_data_after_sign_in!
         respond_with resource, location: after_inactive_sign_up_path_for(resource)
       end
@@ -65,7 +65,7 @@ class Devise::RegistrationsController < DeviseController
   def destroy
     resource.destroy
     Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name)
-    set_flash_message! :notice, :destroyed
+    set_flash_message!(:notice, :destroyed)
     yield resource if block_given?
     respond_with_navigational(resource){ redirect_to after_sign_out_path_for(resource_name) }
   end
@@ -148,8 +148,6 @@ class Devise::RegistrationsController < DeviseController
   private
 
   def set_flash_message_for_update(resource, prev_unconfirmed_email)
-    return unless is_flashing_format?
-
     flash_key = if update_needs_confirmation?(resource, prev_unconfirmed_email)
                   :update_needs_confirmation
                 elsif sign_in_after_change_password?
@@ -157,7 +155,7 @@ class Devise::RegistrationsController < DeviseController
                 else
                   :updated_but_not_signed_in
                 end
-    set_flash_message :notice, flash_key
+    set_flash_message!(:notice, flash_key)
   end
 
   def sign_in_after_change_password?
