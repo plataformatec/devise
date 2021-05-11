@@ -142,7 +142,7 @@ module Devise
       # is already confirmed, it should never be blocked. Otherwise we need to
       # calculate if the confirm time has not expired for this user.
       def active_for_authentication?
-        super && (!confirmation_required? || confirmed? || confirmation_period_valid?)
+        super && (!confirmation_required? || confirmed? || allow_unconfirmed_access?)
       end
 
       # The message to be shown if the account is inactive.
@@ -190,31 +190,31 @@ module Devise
 
         # Checks if the confirmation for the user is within the limit time.
         # We do this by calculating if the difference between today and the
-        # confirmation sent date does not exceed the confirm in time configured.
+        # created_at does not exceed the confirm in time configured.
         # allow_unconfirmed_access_for is a model configuration, must always be an integer value.
         #
         # Example:
         #
-        #   # allow_unconfirmed_access_for = 1.day and confirmation_sent_at = today
-        #   confirmation_period_valid?   # returns true
+        #   # allow_unconfirmed_access_for = 1.day and created_at = today
+        #   allow_unconfirmed_access?   # returns true
         #
-        #   # allow_unconfirmed_access_for = 5.days and confirmation_sent_at = 4.days.ago
-        #   confirmation_period_valid?   # returns true
+        #   # allow_unconfirmed_access_for = 5.days and created_at = 4.days.ago
+        #   allow_unconfirmed_access?   # returns true
         #
-        #   # allow_unconfirmed_access_for = 5.days and confirmation_sent_at = 5.days.ago
-        #   confirmation_period_valid?   # returns false
+        #   # allow_unconfirmed_access_for = 5.days and created_at = 5.days.ago
+        #   allow_unconfirmed_access?   # returns false
         #
         #   # allow_unconfirmed_access_for = 0.days
-        #   confirmation_period_valid?   # will always return false
+        #   allow_unconfirmed_access?   # will always return false
         #
         #   # allow_unconfirmed_access_for = nil
-        #   confirmation_period_valid?   # will always return true
+        #   allow_unconfirmed_access?   # will always return true
         #
-        def confirmation_period_valid?
+        def allow_unconfirmed_access?
           return true if self.class.allow_unconfirmed_access_for.nil?
-          return false if self.class.allow_unconfirmed_access_for == 0.days
+          return false if self.class.allow_unconfirmed_access_for == 0.day
 
-          confirmation_sent_at && confirmation_sent_at.utc >= self.class.allow_unconfirmed_access_for.ago
+          created_at && created_at.utc >= self.class.allow_unconfirmed_access_for.ago
         end
 
         # Checks if the user confirmation happens before the token becomes invalid

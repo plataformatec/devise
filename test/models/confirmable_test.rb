@@ -217,26 +217,23 @@ class ConfirmableTest < ActiveSupport::TestCase
     assert_equal 'was already confirmed, please try signing in', user.errors[:email].join
   end
 
-  test 'confirm time should fallback to devise confirm in default configuration' do
-    swap Devise, allow_unconfirmed_access_for: 1.day do
+  test 'should be active when created_at is not overpast' do
+    swap Devise, allow_unconfirmed_access_for: 5.days do
       user = create_user
-      user.confirmation_sent_at = 2.days.ago
-      refute user.active_for_authentication?
 
-      Devise.allow_unconfirmed_access_for = 3.days
+      user.created_at = 4.days.ago
       assert user.active_for_authentication?
     end
   end
 
-  test 'should be active when confirmation sent at is not overpast' do
+  test 'should not be active when created_at is overpast' do
     swap Devise, allow_unconfirmed_access_for: 5.days do
-      Devise.allow_unconfirmed_access_for = 5.days
       user = create_user
 
-      user.confirmation_sent_at = 4.days.ago
-      assert user.active_for_authentication?
+      user.created_at = 5.days.ago
+      refute user.active_for_authentication?
 
-      user.confirmation_sent_at = 5.days.ago
+      user.created_at = 6.days.ago
       refute user.active_for_authentication?
     end
   end
@@ -252,42 +249,42 @@ class ConfirmableTest < ActiveSupport::TestCase
   end
 
   test 'should not be active when confirm in is zero' do
-    Devise.allow_unconfirmed_access_for = 0.days
-    user = create_user
-    user.confirmation_sent_at = Time.zone.today
-    refute user.active_for_authentication?
+    swap Devise, allow_unconfirmed_access_for: 0.days do
+      user = create_user
+      user.created_at = Time.zone.today
+      refute user.active_for_authentication?
+    end
   end
 
   test 'should not be active when confirm period is set to 0 days' do
-    Devise.allow_unconfirmed_access_for = 0.days
-    user = create_user
+    swap Devise, allow_unconfirmed_access_for: 0.days do
+      user = create_user
 
-    Timecop.freeze(Time.zone.today) do
-      user.confirmation_sent_at = Time.zone.today
-      refute user.active_for_authentication?
+      Timecop.freeze(Time.zone.today) do
+        user.created_at = Time.zone.today
+        refute user.active_for_authentication?
+      end
     end
   end
 
   test 'should be active when we set allow_unconfirmed_access_for to nil' do
     swap Devise, allow_unconfirmed_access_for: nil do
       user = create_user
-      user.confirmation_sent_at = Time.zone.today
+      user.created_at = Time.zone.today
       assert user.active_for_authentication?
     end
   end
 
-  test 'should not be active without confirmation' do
+  test 'should not be active without created_at' do
     user = create_user
-    user.confirmation_sent_at = nil
-    user.save
+    user.instance_eval { def created_at; nil end }
     refute user.reload.active_for_authentication?
   end
 
-  test 'should be active without confirmation when confirmation is not required' do
+  test 'should be active without created_at when confirmation is not required' do
     user = create_user
     user.instance_eval { def confirmation_required?; false end }
-    user.confirmation_sent_at = nil
-    user.save
+    user.instance_eval { def created_at; nil end }
     assert user.reload.active_for_authentication?
   end
 
