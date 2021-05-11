@@ -19,7 +19,7 @@ module Devise
       loop do
         raw = Devise.friendly_token
         enc = OpenSSL::HMAC.hexdigest(@digest, key, raw)
-        break [raw, enc] unless klass.to_adapter.find_first({ column => enc })
+        break [raw, enc] unless klass.exists?({ column => enc })
       end
     end
 

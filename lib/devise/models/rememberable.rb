@@ -147,7 +147,7 @@ module Devise
         def remember_token #:nodoc:
           loop do
             token = Devise.friendly_token
-            break token unless to_adapter.find_first({ remember_token: token })
+            break token unless exists?({ remember_token: token })
           end
         end
 
