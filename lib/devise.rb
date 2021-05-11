@@ -318,7 +318,9 @@ module Devise
   end
 
   def self.ref(arg)
-    ActiveSupport::Dependencies.reference(arg)
+    if ActiveSupport::Dependencies.respond_to?(:reference)
+      ActiveSupport::Dependencies.reference(arg)
+    end
     Getter.new(arg)
   end
 

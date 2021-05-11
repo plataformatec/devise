@@ -7,6 +7,8 @@ jobs:
       matrix:
         gemfile:
           - Gemfile
+          - gemfiles/Gemfile-rails-main
+          - gemfiles/Gemfile-rails-6-1
           - gemfiles/Gemfile-rails-6-0
           - gemfiles/Gemfile-rails-5-2
           - gemfiles/Gemfile-rails-5-1
@@ -31,6 +33,10 @@ jobs:
           - ruby: 2.1
             gemfile: gemfiles/Gemfile-rails-6-0
           - ruby: 2.1
+            gemfile: gemfiles/Gemfile-rails-6-1
+          - ruby: 2.1
+            gemfile: gemfiles/Gemfile-rails-main
+          - ruby: 2.1
             gemfile: gemfiles/Gemfile-rails-5-2
           - ruby: 2.1
             gemfile: gemfiles/Gemfile-rails-5-1
@@ -41,23 +47,39 @@ jobs:
           - ruby: 2.2
             gemfile: gemfiles/Gemfile-rails-6-0
           - ruby: 2.2
+            gemfile: gemfiles/Gemfile-rails-6-1
+          - ruby: 2.2
+            gemfile: gemfiles/Gemfile-rails-main
+          - ruby: 2.2
             gemfile: gemfiles/Gemfile-rails-5-2
           - ruby: 2.3
             gemfile: Gemfile
           - ruby: 2.3
             gemfile: gemfiles/Gemfile-rails-6-0
+          - ruby: 2.3
+            gemfile: gemfiles/Gemfile-rails-6-1
+          - ruby: 2.3
+            gemfile: gemfiles/Gemfile-rails-main
           - ruby: 2.4
             gemfile: Gemfile
           - ruby: 2.4
             gemfile: gemfiles/Gemfile-rails-6-0
+          - ruby: 2.4
+            gemfile: gemfiles/Gemfile-rails-6-1
+          - ruby: 2.4
+            gemfile: gemfiles/Gemfile-rails-main
           - ruby: 2.4
             gemfile: gemfiles/Gemfile-rails-4-1
           - ruby: 2.5
             gemfile: gemfiles/Gemfile-rails-4-1
+          - ruby: 2.5
+            gemfile: gemfiles/Gemfile-rails-main
           - ruby: 2.6
             gemfile: gemfiles/Gemfile-rails-4-1
           - ruby: 2.6
             gemfile: gemfiles/Gemfile-rails-4-2
+          - ruby: 2.6
+            gemfile: gemfiles/Gemfile-rails-main
           - ruby: 2.7
             gemfile: gemfiles/Gemfile-rails-4-1
           - ruby: 2.7
@@ -88,6 +110,10 @@ jobs:
             gemfile: gemfiles/Gemfile-rails-5-2
           - env: DEVISE_ORM=mongoid
             gemfile: gemfiles/Gemfile-rails-6-0
+          - env: DEVISE_ORM=mongoid
+            gemfile: gemfiles/Gemfile-rails-6-1
+          - env: DEVISE_ORM=mongoid
+            gemfile: gemfiles/Gemfile-rails-main
     runs-on: ubuntu-latest
     env: # $BUNDLE_GEMFILE must be set at the job level, so it is set for all steps
       BUNDLE_GEMFILE: ${{ matrix.gemfile }}

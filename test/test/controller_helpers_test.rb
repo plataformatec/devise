@@ -103,7 +103,7 @@ class TestControllerHelpersTest < Devise::ControllerTestCase
   test "returns the content type of a failure app" do
     get :index, params: { format: :json }
 
-    if Devise::Test.rails6?
+    if Devise::Test.rails6_and_up?
       assert_includes response.media_type, 'application/json'
     else
       assert_includes response.content_type, 'application/json'
