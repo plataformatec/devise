@@ -441,7 +441,9 @@ ERROR
         end
         path_prefix = Devise.omniauth_path_prefix || "/#{mapping.fullpath}/auth".squeeze("/")
 
-        set_omniauth_path_prefix!(path_prefix)
+        unless mapping.to.omniauth_providers.all? { |provider| Devise.omniauth_configs[provider].options[:path_prefix].present? }
+          set_omniauth_path_prefix!(path_prefix)
+        end
 
         mapping.to.omniauth_providers.each do |provider|
           match "#{path_prefix}/#{provider}",
@@ -489,7 +491,8 @@ ERROR
         if ::OmniAuth.config.path_prefix && ::OmniAuth.config.path_prefix != path_prefix
           raise "Wrong OmniAuth configuration. If you are getting this exception, it means that either:\n\n" \
             "1) You are manually setting OmniAuth.config.path_prefix and it doesn't match the Devise one\n" \
-            "2) You are setting :omniauthable in more than one model\n" \
+            "2) You are setting :omniauthable in more than one model, but you did not specify custom path_prefix " \
+            "when you registered provider for this model in config/initializers/devise.rb\n" \
             "3) You changed your Devise routes/OmniAuth setting and haven't restarted your server"
         else
           ::OmniAuth.config.path_prefix = path_prefix
