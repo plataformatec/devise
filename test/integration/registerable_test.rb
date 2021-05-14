@@ -33,7 +33,7 @@ class RegistrationTest < Devise::IntegrationTest
     fill_in 'password confirmation', with: 'new_user123'
     click_button 'Sign up'
 
-    assert_contain 'Welcome! You have signed up successfully.'
+    assert_contain 'You have signed up successfully.'
     assert warden.authenticated?(:admin)
     assert_current_url "/?custom=1"
   end
@@ -266,7 +266,7 @@ class RegistrationTest < Devise::IntegrationTest
     get edit_user_registration_path
 
     click_button "Cancel my account"
-    assert_contain "Bye! Your account has been successfully cancelled. We hope to see you again soon."
+    assert_contain "Your account has been successfully cancelled."
 
     assert_empty User.to_adapter.find_all
   end

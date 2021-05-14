@@ -52,7 +52,7 @@ class PasswordTest < Devise::IntegrationTest
     end
 
     assert_current_url '/users/sign_in'
-    assert_contain 'You will receive an email with instructions on how to reset your password in a few minutes.'
+    assert_contain 'You will receive an email with instructions on how to reset your password shortly.'
   end
 
   test 'reset password with email should send an email from a custom mailer' do
@@ -91,7 +91,7 @@ class PasswordTest < Devise::IntegrationTest
     end
 
     assert_current_url '/users/sign_in'
-    assert_contain 'You will receive an email with instructions on how to reset your password in a few minutes.'
+    assert_contain 'You will receive an email with instructions on how to reset your password shortly.'
   end
 
   test 'reset password with email with extra whitespace should fail when email is NOT the list of strip whitespace keys' do
@@ -124,7 +124,7 @@ class PasswordTest < Devise::IntegrationTest
     request_forgot_password
 
     assert_current_url '/users/sign_in'
-    assert_contain 'You will receive an email with instructions on how to reset your password in a few minutes.'
+    assert_contain 'You will receive an email with instructions on how to reset your password shortly.'
   end
 
   test 'not authenticated user with invalid email should receive an error message' do
@@ -318,7 +318,7 @@ class PasswordTest < Devise::IntegrationTest
 
       assert_not_contain "1 error prohibited this user from being saved:"
       assert_not_contain "Email not found"
-      assert_contain "If your email address exists in our database, you will receive a password recovery link at your email address in a few minutes."
+      assert_contain "If your account exists, you will receive a password recovery email shortly."
       assert_current_url "/users/sign_in"
     end
   end
@@ -330,7 +330,7 @@ class PasswordTest < Devise::IntegrationTest
       fill_in 'email', with: user.email
       click_button 'Send me reset password instructions'
 
-      assert_contain "If your email address exists in our database, you will receive a password recovery link at your email address in a few minutes."
+      assert_contain "If your account exists, you will receive a password recovery email shortly."
       assert_current_url "/users/sign_in"
     end
   end
