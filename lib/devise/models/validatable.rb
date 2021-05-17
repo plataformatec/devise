@@ -29,7 +29,10 @@ module Devise
 
         base.class_eval do
           validates_presence_of   :email, if: :email_required?
-          if Devise.activerecord51?
+          if Devise.activerecord61?
+            validates_uniqueness_of :email, allow_blank: true, if: :will_save_change_to_email?
+            validates_format_of     :email, with: email_regexp, allow_blank: true, if: :will_save_change_to_email?
+          elsif Devise.activerecord51?
             validates_uniqueness_of :email, allow_blank: true, case_sensitive: true, if: :will_save_change_to_email?
             validates_format_of     :email, with: email_regexp, allow_blank: true, if: :will_save_change_to_email?
           else
