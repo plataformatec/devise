@@ -248,7 +248,7 @@ module Devise
         def generate_confirmation_token
           if self.confirmation_token && !confirmation_period_expired?
             @raw_confirmation_token = self.confirmation_token
-          else
+          elsif !@skip_confirmation_notification
             self.confirmation_token = @raw_confirmation_token = Devise.friendly_token
             self.confirmation_sent_at = Time.now.utc
           end
