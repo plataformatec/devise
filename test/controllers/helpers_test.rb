@@ -252,6 +252,32 @@ class ControllerAuthenticatableTest < Devise::ControllerTestCase
     assert_equal "/foo#bar", @controller.stored_location_for(:user)
   end
 
+  test 'store location for only stores whitelisted domains' do
+    swap Devise, redirect_whitelist: ["http://safe.com"] do
+      @controller.store_location_for(:user, "http://evil.com")
+      assert_nil @controller.stored_location_for(:user)
+      @controller.store_location_for(:user, "http://safe.com")
+      assert_equal "http://safe.com", @controller.stored_location_for(:user)
+    end
+  end
+
+  test 'store location for rejects whitelisted domains when not exact' do
+    swap Devise, redirect_whitelist: ["http://safe.com"] do
+      @controller.store_location_for(:user, "http://safe.com@evil.com")
+      assert_nil @controller.stored_location_for(:user)
+    end
+  end
+
+  test 'store location for rejects .evil.com' do
+    @controller.store_location_for(:user, ".evil.com")
+    assert_nil @controller.stored_location_for(:user)
+  end
+
+  test 'store location for handles invalid URIs' do
+    @controller.store_location_for(:user, "http:evil.com")
+    assert_nil @controller.stored_location_for(:user)
+  end
+
   test 'after sign in path defaults to root path if none by was specified for the given scope' do
     assert_equal root_path, @controller.after_sign_in_path_for(:user)
   end

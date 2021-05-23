@@ -254,6 +254,11 @@ module Devise
   mattr_accessor :clean_up_csrf_token_on_authentication
   @@clean_up_csrf_token_on_authentication = true
 
+  # Set to allow store_location_for method to accept whitelisted domains,
+  # which can later be redirected to when calling stored_location_for.
+  mattr_accessor :redirect_whitelist
+  @@redirect_whitelist = []
+
   # When false, Devise will not attempt to reload routes on eager load.
   # This can reduce the time taken to boot the app but if your application
   # requires the Devise mappings to be loaded during boot time the application
