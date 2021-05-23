@@ -26,7 +26,7 @@ class Devise::PasswordsController < DeviseController
   def edit
     self.resource = resource_class.new
     set_minimum_password_length
-    resource.reset_password_token = params[:reset_password_token]
+    resource.reset_password_token = reset_password_token_from_request
   end
 
   # PUT /resource/password
@@ -63,10 +63,16 @@ class Devise::PasswordsController < DeviseController
 
     # Check if a reset_password_token is provided in the request
     def assert_reset_token_passed
-      if params[:reset_password_token].blank?
+      if reset_password_token_from_request.blank?
         set_flash_message(:alert, :no_token)
         redirect_to new_session_path(resource_name)
       end
+    end
+
+    # By default, pull reset_password_token from params, but this allows for
+    # overriding to pull from the session instead, for example
+    def reset_password_token_from_request
+      params[:reset_password_token]
     end
 
     # Check if proper Lockable module methods are present & unlock strategy
