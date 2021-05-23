@@ -32,8 +32,13 @@ module Devise
       extend ActiveSupport::Concern
 
       included do
-        after_update :send_email_changed_notification, if: :send_email_changed_notification?
-        after_update :send_password_change_notification, if: :send_password_change_notification?
+        if defined?(ActiveRecord) && self < ActiveRecord::Base # ActiveRecord
+          after_commit :send_email_changed_notification, on: :update, if: :send_email_changed_notification?
+          after_commit :send_password_change_notification, on: :update, if: :send_password_change_notification?
+        else # Mongoid
+          after_update :send_email_changed_notification, if: :send_email_changed_notification?
+          after_update :send_password_change_notification, if: :send_password_change_notification?
+        end
 
         attr_reader :password, :current_password
         attr_accessor :password_confirmation
@@ -42,7 +47,7 @@ module Devise
       def initialize(*args, &block)
         @skip_email_changed_notification = false
         @skip_password_change_notification = false
-        super 
+        super
       end
 
       # Skips sending the email changed notification after_update
