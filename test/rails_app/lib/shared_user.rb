@@ -7,7 +7,7 @@ module SharedUser
     devise :database_authenticatable, :confirmable, :lockable, :recoverable,
            :registerable, :rememberable, :timeoutable,
            :trackable, :validatable, :omniauthable, password_length: 7..72,
-           reconfirmable: false
+           reconfirmable: false, email_scope: [:username]
 
     attr_accessor :other_key
 
