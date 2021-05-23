@@ -1,6 +1,9 @@
 ===============================================================================
 
-Depending on your application's configuration some manual setup may be required:
+Depending on your application's configuration some manual setup may be required.
+
+First, follow the instructions at https://github.com/heartcombo/devise#getting-started
+to install devise and add it to a model. Then come back and check this list:
 
   1. Ensure you have defined default url options in your environments files. Here
      is an example of default_url_options appropriate for a development environment
@@ -10,7 +13,7 @@ Depending on your application's configuration some manual setup may be required:
 
      In production, :host should be set to the actual host of your application.
 
-     * Required for all applications. *
+     * Required for all applications! *
 
   2. Ensure you have defined root_url to *something* in your config/routes.rb.
      For example:
