@@ -2,6 +2,45 @@
 
 en:
   devise:
+    form:
+      text:
+        currently_waiting_confirmation_for: "Currently waiting confirmation for:"
+        leave_blank_if_you_dont_want_to_change_it: "leave blank if you don't want to change it"
+        characters_minimum: "characters minimum"
+        we_need_your_current_password_to_confirm_your_changes: "we need your current password to confirm your changes"
+      links:
+        sign_in_with: "Sign in with"
+        back: "Back"
+        didnt_receive_unlock_instructions: "Resend unlock instructions"
+        didnt_receive_confirmation_instructions: "Resend confirmation instructions"
+        forgot_your_password: "Forgot your password?"
+        change_your_password: "Change your password"
+        edit: "Edit"
+        sign_up: "Sign up"
+        login: "Log in"
+      title: 
+        resend_unlock_instructions: "Resend unlock instructions"
+        resend_confirmation_instructions: "Resend confirmation instructions"
+        forgot_your_password: "Forgot your password?"
+        change_your_password: "Change your password"
+        edit: "Edit"
+        sign_up: "Sign up"
+        login: "Log in"
+      button: 
+        resend_confirmation_instructions: "Resend confirmation instructions"
+        change_my_password: "Change my password"
+        send_me_reset_password_instructions: "Send me reset password instructions"
+        update: "Update"
+        cancel_my_account: "Cancel my account"
+        sign_up: "Sign up"
+        login: "Log in"
+        resend_unlock_instructions: "Resend unlock instructions"
+      field: 
+        email: "Email" 
+        password: "Password"
+        password_confirmation: "Password Confirmation"
+        current_password: "Current Password"
+        remember_me: "Remember me"
     confirmations:
       confirmed: "Your email address has been successfully confirmed."
       send_instructions: "You will receive an email with instructions for how to confirm your email address in a few minutes."

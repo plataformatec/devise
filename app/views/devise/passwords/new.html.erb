@@ -1,15 +1,15 @@
-<h2>Forgot your password?</h2>
+<h2><%= I18n.t("devise.form.title.forgot_your_password") %></h2>
 
 <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
   <%= render "devise/shared/error_messages", resource: resource %>
 
   <div class="field">
-    <%= f.label :email %><br />
+    <%= f.label I18n.t("devise.form.field.email") %><br />
     <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
   </div>
 
   <div class="actions">
-    <%= f.submit "Send me reset password instructions" %>
+    <%= f.submit I18n.t("devise.form.button.send_me_reset_password_instructions") %>
   </div>
 <% end %>
 
