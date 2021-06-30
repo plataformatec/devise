@@ -1,0 +1,3 @@
+Welcome <%= @email %>!
+
+You can confirm your account email through visiting the url <%= confirmation_url(@resource, confirmation_token: @token) %>

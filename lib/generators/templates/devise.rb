@@ -26,6 +26,11 @@ Devise.setup do |config|
   # with default "from" parameter.
   config.mailer_sender = 'please-change-me-at-config-initializers-devise@example.com'
 
+  # Configure which formats the Devise mailer will include for notification emails.
+  # Currently supports html and text. For backwards compatability, the default is html
+  # The text format is it's own template, there is no automatic geneneration from html.
+  # config.mailer_formats = [:html, :text]
+
   # Configure the class responsible to send e-mails.
   # config.mailer = 'Devise::Mailer'
 

@@ -211,6 +211,10 @@ module Devise
   mattr_accessor :mailer_sender
   @@mailer_sender = nil
 
+  # Which formats should Devise send as emails
+  mattr_accessor :mailer_formats
+  @@mailer_formats = [:html]
+
   # Skip session storage for the following strategies
   mattr_accessor :skip_session_storage
   @@skip_session_storage = [:http_auth]

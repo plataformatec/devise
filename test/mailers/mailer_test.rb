@@ -17,4 +17,14 @@ class MailerTest < ActionMailer::TestCase
 
     assert mail.content_transfer_encoding, "7bit"
   end
+
+  test "emails multi-part if mailer_formats contains multiple formats" do
+    begin
+      Devise.mailer_formats = [:html, :text]
+      mail = Devise::Mailer.email_changed(create_user)
+      assert mail.multipart?
+    ensure
+      Devise.mailer_formats = [:html]
+    end
+  end
 end
