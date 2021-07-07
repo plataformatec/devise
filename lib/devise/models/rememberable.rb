@@ -57,7 +57,7 @@ module Devise
       # it exists), and save the record without validations.
       def forget_me!
         return unless persisted?
-        self.remember_token = nil if respond_to?(:remember_token)
+        self.remember_token = nil if respond_to?(:remember_token) && self.class.expire_all_remember_me_on_sign_out
         self.remember_created_at = nil if self.class.expire_all_remember_me_on_sign_out
         save(validate: false)
       end
